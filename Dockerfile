@@ -8,24 +8,15 @@ USER root
 COPY util/* /usr/local/bin/
 RUN chmod +x /usr/local/bin/*
 
-# Install OS dependencies
+# Install OS dependencies to be kept in
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get -yq dist-upgrade && min-apt \
-    # To be purged at end
-    bzip2 \
-    wget \
-    # Kept in build
     ca-certificates \
     locales \
-    sudo
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    sudo && \
+    \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
-
-# Install Tini
-RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.18.0/tini && \
-    echo "12D20136605531B09A2C2DAC02CCEE85E1B874EB322EF6BAF7561CD93F93C855 *tini" | sha256sum -c - && \
-    mv tini /usr/local/bin/tini && \
-    chmod +x /usr/local/bin/tini
 
 # Configure Miniconda environment
 ENV MINICONDA_VERSION=4.5.1 \
@@ -50,10 +41,9 @@ RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
     mkdir /home/$NB_USER/work && \
     fix-permissions $CONDA_DIR $HOME
 
-USER $NB_USER
-
 # Install Miniconda, configure, cleanup, fix permissions
-RUN cd /tmp && \
+RUN min-apt wget && \
+    cd /tmp && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
     echo "${MINICONDA_HASH} *Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
     /bin/bash Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
@@ -61,12 +51,14 @@ RUN cd /tmp && \
     conda config --system --append channels conda-forge && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
+    clean-conda && \
     fix-permissions $CONDA_DIR $HOME && \
-    clean-conda
+    # Install tini
+    wget --quiet https://github.com/krallin/tini/releases/download/v0.18.0/tini && \
+    echo "12D20136605531B09A2C2DAC02CCEE85E1B874EB322EF6BAF7561CD93F93C855 *tini" | sha256sum -c - && \
+    mv tini /usr/local/bin/tini && \
+    chmod +x /usr/local/bin/tini && \
+    purge-apt wget
 
-# Purge build dependencies as root and return to NB_USER
-USER root
-RUN purge-apt \ 
-    bzip2 \
-    wget
+# RUN fix-permissions $CONDA_DIR $HOME
 USER $NB_USER
