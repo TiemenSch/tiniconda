@@ -1,6 +1,4 @@
 #!/bin/sh -e
 
 conda install -y $@
-conda clean -tipsy
-rm -rf $CONDA_DIR/pkgs
-clean-pyc-files $CONDA_DIR
+clean-conda
