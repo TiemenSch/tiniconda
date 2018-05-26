@@ -8,15 +8,16 @@ USER root
 COPY util/* /usr/local/bin/
 RUN chmod +x /usr/local/bin/*
 
-# Install all OS dependencies
+# Install OS dependencies
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get -yq dist-upgrade && min-apt \
-    wget \
+    # To be purged at end
     bzip2 \
+    wget \
+    # Kept in build
     ca-certificates \
-    sudo \
     locales \
-    fonts-liberation
+    sudo
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
@@ -62,3 +63,10 @@ RUN cd /tmp && \
     conda config --system --set show_channel_urls true && \
     fix-permissions $CONDA_DIR $HOME && \
     clean-conda
+
+# Purge build dependencies as root and return to NB_USER
+USER root
+RUN purge-apt \ 
+    bzip2 \
+    wget
+USER $NB_USER
