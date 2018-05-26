@@ -8,9 +8,6 @@ USER root
 COPY util/* /usr/local/bin/
 RUN chmod +x /usr/local/bin/*
 
-# Install OS dependencies
-RUN apk --update --no-cache add tini
-
 # Configure Miniconda environment
 ENV MINICONDA_VERSION=4.5.1 \
     MINICONDA_HASH=0c28787e3126238df24c5d4858bd0744 \
@@ -35,10 +32,9 @@ RUN adduser -D -u $NB_UID $NB_USER -G $NB_GROUP && \
     mkdir /home/$NB_USER/work && \
     fix-permissions $HOME $CONDA_DIR
 
-USER $NB_USER
-
 # Install Miniconda, configure, cleanup, fix permissions
-RUN cd /tmp && \
+RUN min-apk wget && \
+    cd /tmp && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
     echo "${MINICONDA_HASH} *Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
     /bin/sh Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
@@ -47,8 +43,7 @@ RUN cd /tmp && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
     clean-conda && \
-    fix-permissions $CONDA_DIR $HOME
+    fix-permissions $CONDA_DIR $HOME && \
+    apk del wget
 
-USER root
-RUN apk del wget
 USER $NB_USER
