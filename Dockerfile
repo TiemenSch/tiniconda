@@ -7,7 +7,7 @@ USER root
 # Copy useful "minimal" commands from util
 COPY util/* /usr/local/bin/
 RUN chmod +x /usr/local/bin/* && \
-    min-apk && \
+    min-apk \
     tini \
     wget
 
