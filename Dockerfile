@@ -33,5 +33,5 @@ RUN cd /tmp && \
 
 RUN min-conda conda-build
 
-ENTRYPOINT [ "/usr/bin/tini", "--" ]
+ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "/bin/sh" ]
