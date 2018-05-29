@@ -35,4 +35,4 @@ RUN min-conda conda-build && \
     min-apk bash
 
 ENTRYPOINT [ "/sbin/tini", "--" ]
-CMD [ "/bin/sh" ]
+CMD [ "/bin/bash" ]
