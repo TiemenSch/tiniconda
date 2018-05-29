@@ -46,4 +46,6 @@ RUN cd /tmp && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
     clean-conda && \
-    fix-permissions $CONDA_DIR $HOME
+    fix-permissions $HOME
+
+RUN min-conda conda-build
