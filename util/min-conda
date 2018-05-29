@@ -2,4 +2,3 @@
 
 conda install -y $@
 clean-conda
-fix-permissions $CONDA_DIR
