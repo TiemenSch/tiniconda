@@ -31,7 +31,7 @@ RUN cd /tmp && \
     conda config --system --set show_channel_urls true && \
     clean-conda
 
-RUN min-conda conda-build && \
+RUN min-conda conda-build && git \
     min-apk bash
 
 ENTRYPOINT [ "/sbin/tini", "--" ]
