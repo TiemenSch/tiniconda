@@ -32,7 +32,7 @@ RUN cd /tmp && \
     clean-conda
 
 RUN min-conda conda-build pytest pytest-cov && \
-    conda update --all && clean-conda \
+    conda update --all && clean-conda && \
     min-apk bash git
 
 ENTRYPOINT [ "/sbin/tini", "--" ]
