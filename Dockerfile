@@ -25,3 +25,5 @@ RUN chmod +x /usr/bin/tini
 
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
+
+RUN conda create -n psi python=3.6.* bokeh numba numpy pandas plotly seaborn 
