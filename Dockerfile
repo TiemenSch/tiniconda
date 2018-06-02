@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM ubuntu:latest
 
 # Copy useful "minimal" commands from util
 COPY util/* /usr/local/bin/
