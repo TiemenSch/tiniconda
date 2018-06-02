@@ -1,5 +1,0 @@
-#!/bin/sh -e
-
-apk --update --no-cache add $@
-
-rm -rf /var/cache/apk/*
