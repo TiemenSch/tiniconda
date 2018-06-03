@@ -12,9 +12,9 @@ RUN min-apt bzip2 ca-certificates curl git wget
 RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh && \
-    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo "conda activate" >> ~/.bashrc && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
     . ~/.bashrc && \
+    conda activate && \
     conda update --all && \
     min-conda conda-build
 
