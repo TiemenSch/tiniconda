@@ -27,3 +27,5 @@ CMD [ "/bin/bash" ]
 
 RUN conda create -qyn psi python=3.6.* bokeh numba numpy pandas plotly seaborn && \
     clean-conda
+
+RUN chmod +x /opt/conda/etc/profile.d/conda.sh
